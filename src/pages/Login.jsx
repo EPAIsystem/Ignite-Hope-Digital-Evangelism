@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import IgniteMark from "../components/IgniteMark";
 
 export default function Login() {
   const { loginWithEmail, loginWithGoogle, signUpWithEmail, isFirebaseConfigured } = useAuth();
@@ -39,9 +40,11 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen flex-col bg-cream dark:bg-flame-950">
-      <div className="bg-flame-950 px-6 py-6 text-center">
-        <p className="text-xs font-bold tracking-widest text-gold-500">VOLTA GHANA MISSION</p>
-        <h1 className="font-display mt-1 text-2xl text-white">Ignite Hope Digital Evangelism</h1>
+      <div className="bg-flame-950 px-6 py-7 text-center">
+        <IgniteMark size={48} className="mx-auto" />
+        <h1 className="font-display mt-2 text-2xl text-white">Ignite Hope</h1>
+        <p className="text-xs text-flame-100/70">Digital Evangelism</p>
+        <p className="mt-1.5 text-[10px] tracking-widest text-gold-500/80">VOLTA GHANA MISSION</p>
       </div>
       <div className="flex flex-1 items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">

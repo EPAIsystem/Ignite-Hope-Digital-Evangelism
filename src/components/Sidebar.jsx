@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { X, Moon, Sun } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import IgniteMark from "./IgniteMark";
 
 function navFor(role) {
   const common = [{ to: "/profile", label: "My Profile" }];
@@ -65,9 +66,13 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
         }`}
       >
         <div className="flex items-start justify-between px-6 py-7">
-          <div>
-            <p className="text-xs tracking-wide text-flame-100/70">Volta Ghana Mission</p>
-            <h1 className="font-display mt-1 text-xl leading-snug">Ignite Hope Digital Evangelism</h1>
+          <div className="flex items-start gap-2.5">
+            <IgniteMark size={34} className="mt-0.5 shrink-0" />
+            <div>
+              <h1 className="font-display text-lg leading-snug">Ignite Hope</h1>
+              <p className="text-[11px] leading-tight text-flame-100/70">Digital Evangelism</p>
+              <p className="mt-1 text-[10px] tracking-wide text-flame-100/50">Volta Ghana Mission</p>
+            </div>
           </div>
           <button onClick={onClose} aria-label="Close menu" className="shrink-0 rounded-md p-1 text-flame-100/70 hover:bg-flame-900 md:hidden">
             <X size={18} />

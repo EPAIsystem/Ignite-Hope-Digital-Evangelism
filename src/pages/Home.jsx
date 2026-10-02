@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getContentItems, getInquiries, getTasks, getDocuments } from "../lib/store";
+import IgniteMark from "../components/IgniteMark";
 
 export default function Home() {
   const { profile } = useAuth();
@@ -18,8 +19,10 @@ export default function Home() {
   if (role === "public") {
     return (
       <div className="mx-auto max-w-2xl px-6 py-12 text-center">
-        <p className="text-xs font-bold tracking-widest text-flame-700 dark:text-gold-500">VOLTA GHANA MISSION</p>
-        <h1 className="font-display mt-2 text-3xl text-flame-950 dark:text-white">Ignite Hope Digital Evangelism</h1>
+        <IgniteMark size={56} className="mx-auto" />
+        <h1 className="font-display mt-3 text-3xl text-flame-950 dark:text-white">Ignite Hope</h1>
+        <p className="text-sm text-ink-soft dark:text-flame-200">Digital Evangelism</p>
+        <p className="mt-1.5 text-[11px] tracking-widest text-flame-700/70 dark:text-gold-500/70">VOLTA GHANA MISSION</p>
         <p className="mt-4 text-ink-soft dark:text-flame-200">
           Christ → Scripture → Transformation → Fellowship → Mission.
         </p>
