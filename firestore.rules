@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function myRole() {
+      return isSignedIn()
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
+        : null;
+    }
+    function isAdmin() { return myRole() in ['admin', 'director']; }
+    function isStaff() { return myRole() in ['admin', 'director', 'team', 'bible_worker', 'digital_missionary']; }
+
+    // Users / profiles — anyone signed in can read and update their own
+    // profile; only an admin/director can change anyone else's (role and
+    // team assignment happen here, via the Admin Console).
+    match /users/{uid} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow update: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Document Library — everyone (even signed-out visitors) can read;
+    // only staff can add or remove entries.
+    match /documents/{id} {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+
+    // Content Calendar — staff only, both ways.
+    match /content/{id} {
+      allow read, write: if isStaff();
+    }
+
+    // Follow-Up CRM — public can create their own Bible Study Request;
+    // only staff can read the queue or update/progress a record.
+    match /inquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if isStaff();
+    }
+
+    // Team Workspaces — staff only.
+    match /tasks/{id} {
+      allow read, write: if isStaff();
+    }
+
+    // KPI Dashboard — staff only.
+    match /kpi/{id} {
+      allow read, write: if isStaff();
+    }
+
+    // City Campaign — staff can read; only admin/director can create or
+    // change a campaign's stage.
+    match /campaigns/{id} {
+      allow read: if isStaff();
+      allow write: if isAdmin();
+    }
+
+    // Donations — anyone can record a gift intent; only admin/director
+    // can read the ledger or update a record's status.
+    match /donations/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}

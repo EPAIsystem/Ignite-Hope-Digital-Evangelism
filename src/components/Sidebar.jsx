@@ -66,8 +66,8 @@ export default function Sidebar({ open = false, onClose = () => {} }) {
       >
         <div className="flex items-start justify-between px-6 py-7">
           <div>
-            <p className="text-xs tracking-wide text-flame-100/70">Ignite Hope</p>
-            <h1 className="font-display mt-1 text-xl leading-snug">Digital Evangelism</h1>
+            <p className="text-xs tracking-wide text-flame-100/70">Volta Ghana Mission</p>
+            <h1 className="font-display mt-1 text-xl leading-snug">Ignite Hope Digital Evangelism</h1>
           </div>
           <button onClick={onClose} aria-label="Close menu" className="shrink-0 rounded-md p-1 text-flame-100/70 hover:bg-flame-900 md:hidden">
             <X size={18} />
