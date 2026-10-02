@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getDocuments, addDocument, deleteDocument, DOC_CATEGORIES } from "../lib/store";
+import { getDocuments, addDocument, deleteDocument, DOC_CATEGORIES, seedStandardLibrary } from "../lib/store";
 
 export default function DocumentLibrary() {
   const { profile } = useAuth();
@@ -11,6 +11,8 @@ export default function DocumentLibrary() {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(DOC_CATEGORIES[0]);
   const [url, setUrl] = useState("");
+  const [seeding, setSeeding] = useState(false);
+  const [seedMsg, setSeedMsg] = useState("");
 
   useEffect(() => { refresh(); }, []);
   function refresh() { getDocuments().then(setDocs); }
@@ -20,6 +22,14 @@ export default function DocumentLibrary() {
     await addDocument({ title, category, url });
     setTitle(""); setUrl("");
     setShowForm(false);
+    refresh();
+  }
+
+  async function handleSeed() {
+    setSeeding(true);
+    const added = await seedStandardLibrary();
+    setSeedMsg(added > 0 ? `Added ${added} document${added === 1 ? "" : "s"}.` : "Already up to date.");
+    setSeeding(false);
     refresh();
   }
 
@@ -38,6 +48,20 @@ export default function DocumentLibrary() {
       <p className="mt-1 text-sm text-ink-soft dark:text-flame-200">
         The Master Blueprint, all 20 implementation documents, and anything added since.
       </p>
+
+      {canManage && docs.length === 0 && (
+        <div className="mt-4 rounded-xl border border-dashed border-flame-300 dark:border-flame-800 bg-flame-50 dark:bg-flame-900/40 p-4">
+          <p className="text-sm text-ink dark:text-flame-100">
+            Library is empty. Load the Blueprint and all 20 implementation documents in one tap —
+            each one deep-links to its exact page in the compiled PDF.
+          </p>
+          <button onClick={handleSeed} disabled={seeding}
+            className="mt-2 rounded-md bg-flame-700 px-4 py-2 text-xs font-medium text-white hover:bg-flame-800 disabled:opacity-50">
+            {seeding ? "Loading…" : "Load standard library (21 documents)"}
+          </button>
+          {seedMsg && <p className="mt-2 text-xs text-flame-700 dark:text-gold-500">{seedMsg}</p>}
+        </div>
+      )}
 
       {showForm && (
         <form onSubmit={handleAdd} className="mt-4 space-y-3 rounded-xl border border-flame-100 dark:border-flame-800 bg-white dark:bg-flame-900/40 p-4">

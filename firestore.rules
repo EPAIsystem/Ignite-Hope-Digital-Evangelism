@@ -63,5 +63,12 @@ service cloud.firestore {
       allow create: if true;
       allow read, update, delete: if isAdmin();
     }
+
+    // Settings (Connect Links, etc.) — readable by anyone, since the
+    // public home page displays them; only admin/director can change them.
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
   }
 }

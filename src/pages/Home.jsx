@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getContentItems, getInquiries, getTasks, getDocuments } from "../lib/store";
 import IgniteMark from "../components/IgniteMark";
+import ConnectLinks from "../components/ConnectLinks";
 
 export default function Home() {
   const { profile } = useAuth();
@@ -34,6 +35,7 @@ export default function Home() {
             Give
           </Link>
         </div>
+        <ConnectLinks className="mt-10" />
       </div>
     );
   }

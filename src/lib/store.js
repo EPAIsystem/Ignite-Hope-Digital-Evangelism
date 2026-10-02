@@ -112,6 +112,44 @@ export const getDocuments = () => listAll("documents", LS.documents, "createdAt"
 export const addDocument = (data) => createItem("documents", LS.documents, data);
 export const deleteDocument = (id) => removeItem("documents", LS.documents, id);
 
+// The compiled Blueprint PDF is hosted at this path (served from public/)
+// with one entry per document, deep-linked to its exact page via the
+// #page= fragment most PDF viewers honor (desktop/Chrome reliably;
+// some mobile viewers ignore it and just open at page 1 — still usable).
+const BLUEPRINT_PDF = "/documents/Ignite_Hope_Master_Blueprint.pdf";
+export const STANDARD_LIBRARY = [
+  { title: "Master Blueprint — Edition 1.0", category: "Master Blueprint", url: `${BLUEPRINT_PDF}#page=1` },
+  { title: "1. Ignite Hope Digital Evangelism Team Manual", category: "Team Manual", url: `${BLUEPRINT_PDF}#page=34` },
+  { title: "2. Digital Bible Worker Manual", category: "Team Manual", url: `${BLUEPRINT_PDF}#page=36` },
+  { title: "3. Digital Missionary Training Manual", category: "Team Manual", url: `${BLUEPRINT_PDF}#page=38` },
+  { title: "4. Content Creation SOP", category: "SOP", url: `${BLUEPRINT_PDF}#page=39` },
+  { title: "5. Bible Study Follow-Up SOP", category: "SOP", url: `${BLUEPRINT_PDF}#page=41` },
+  { title: "6. Digital Safeguarding Policy", category: "Policy", url: `${BLUEPRINT_PDF}#page=42` },
+  { title: "7. Ignite Hope 90-Day Launch Calendar", category: "Other", url: `${BLUEPRINT_PDF}#page=44` },
+  { title: "8. Digital Bible School Curriculum", category: "Curriculum", url: `${BLUEPRINT_PDF}#page=45` },
+  { title: "9. Content Calendar Template", category: "Form / Template", url: `${BLUEPRINT_PDF}#page=47` },
+  { title: "10. Bible Study Registration Form", category: "Form / Template", url: `${BLUEPRINT_PDF}#page=48` },
+  { title: "11. Bible Worker Follow-Up Form", category: "Form / Template", url: `${BLUEPRINT_PDF}#page=49` },
+  { title: "12. Digital Missionary Registration Form", category: "Form / Template", url: `${BLUEPRINT_PDF}#page=50` },
+  { title: "13. Content Review Form", category: "Form / Template", url: `${BLUEPRINT_PDF}#page=52` },
+  { title: "14. Digital Evangelism KPI Dashboard", category: "Other", url: `${BLUEPRINT_PDF}#page=53` },
+  { title: "15. Ignite Hope AI-Assisted Ministry SOP", category: "SOP", url: `${BLUEPRINT_PDF}#page=54` },
+  { title: "16. 21 Days With Jesus Campaign Manual", category: "Campaign Manual", url: `${BLUEPRINT_PDF}#page=56` },
+  { title: "17. YouTube Evangelism Strategy", category: "Strategy", url: `${BLUEPRINT_PDF}#page=57` },
+  { title: "18. WhatsApp Evangelism Strategy", category: "Strategy", url: `${BLUEPRINT_PDF}#page=58` },
+  { title: "19. Telegram Bible School Strategy", category: "Strategy", url: `${BLUEPRINT_PDF}#page=59` },
+  { title: "20. Local Church Integration Protocol", category: "Policy", url: `${BLUEPRINT_PDF}#page=60` },
+];
+export async function seedStandardLibrary() {
+  const existing = await getDocuments();
+  const existingTitles = new Set(existing.map((d) => d.title));
+  const toAdd = STANDARD_LIBRARY.filter((d) => !existingTitles.has(d.title));
+  for (const doc of toAdd) {
+    await addDocument(doc);
+  }
+  return toAdd.length;
+}
+
 // =====================================================================
 // CONTENT CALENDAR  (Content Creation SOP pipeline)
 // =====================================================================
@@ -182,3 +220,33 @@ export const updateCampaign = (id, patch) => updateItem("campaigns", LS.campaign
 // =====================================================================
 export const getDonations = () => listAll("donations", LS.donations, "createdAt");
 export const recordDonationIntent = (data) => createItem("donations", LS.donations, { status: "pending", ...data });
+
+// =====================================================================
+// CONNECT LINKS — admin-editable social/channel URLs, shown publicly
+// =====================================================================
+const LS_SETTINGS = "ihde_settings";
+const SETTINGS_DOC_ID = "connectLinks";
+export const CONNECT_PLATFORMS = [
+  { key: "whatsapp", label: "WhatsApp" },
+  { key: "telegram", label: "Telegram" },
+  { key: "instagram", label: "Instagram" },
+  { key: "youtube", label: "YouTube" },
+  { key: "tiktok", label: "TikTok" },
+  { key: "facebook", label: "Facebook" },
+  { key: "website", label: "Website" },
+  { key: "email", label: "Email" },
+];
+export async function getConnectLinks() {
+  if (!isFirebaseConfigured) {
+    return lsGet(LS_SETTINGS, {});
+  }
+  const snap = await getDoc(doc(db, "settings", SETTINGS_DOC_ID));
+  return snap.exists() ? snap.data() : {};
+}
+export async function updateConnectLinks(patch) {
+  if (!isFirebaseConfigured) {
+    lsSet(LS_SETTINGS, { ...lsGet(LS_SETTINGS, {}), ...patch });
+    return;
+  }
+  await setDoc(doc(db, "settings", SETTINGS_DOC_ID), patch, { merge: true });
+}
