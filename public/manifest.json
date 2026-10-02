@@ -1,0 +1,13 @@
+{
+  "name": "Ignite Hope Digital Evangelism",
+  "short_name": "Ignite Hope",
+  "description": "From digital content to discipleship, mission, and multiplication.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a120d",
+  "theme_color": "#1a120d",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

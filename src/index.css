@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+/* Tailwind v4 defaults dark: to the OS prefers-color-scheme media query.
+   This app toggles a .dark class on <html> instead (so the user's choice
+   persists independent of OS setting), so dark: must be redefined to key
+   off that class. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --color-ink: #201613;
+  --color-ink-soft: #5c5047;
+
+  --color-flame-950: #1a120d;
+  --color-flame-900: #3a1f15;
+  --color-flame-800: #5c2a18;
+  --color-flame-700: #7a2a10;
+  --color-flame-500: #b5401a;
+  --color-flame-100: #fbe4d6;
+
+  --color-gold-600: #9c6f21;
+  --color-gold-500: #b9842a;
+  --color-gold-100: #f3e3c4;
+
+  --color-cream: #fffaf5;
+  --color-tint: #fbf3ec;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+}
+
+html.dark body {
+  background-color: var(--color-flame-950);
+  color: #f3e9df;
+}
