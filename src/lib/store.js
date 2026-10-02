@@ -236,12 +236,18 @@ export const CONNECT_PLATFORMS = [
   { key: "website", label: "Website" },
   { key: "email", label: "Email" },
 ];
+// Known channels, pre-filled so they show up even before an admin has
+// saved anything via the Connect Links panel. Any value an admin saves
+// takes precedence over these the moment it's set.
+const DEFAULT_CONNECT_LINKS = {
+  telegram: "https://t.me/IGNITEHOPEDEVOTIONS",
+};
 export async function getConnectLinks() {
   if (!isFirebaseConfigured) {
-    return lsGet(LS_SETTINGS, {});
+    return { ...DEFAULT_CONNECT_LINKS, ...lsGet(LS_SETTINGS, {}) };
   }
   const snap = await getDoc(doc(db, "settings", SETTINGS_DOC_ID));
-  return snap.exists() ? snap.data() : {};
+  return { ...DEFAULT_CONNECT_LINKS, ...(snap.exists() ? snap.data() : {}) };
 }
 export async function updateConnectLinks(patch) {
   if (!isFirebaseConfigured) {
